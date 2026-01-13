@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATERIAL DE APOIO | ESCRITA FISCAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-light: #ffffff;
+            --accent-color: #ffd89b;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: #ffd89b;  /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #19547b, #ffd89b);  /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #19547b, #ffd89b); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            min-height: 100vh;
+            padding: 20px 20px 100px 20px;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        /* Collapsible Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            padding: 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            font-size: 1.15em;
+            user-select: none;
+        }
+
+        .card-header i {
+            margin-right: 12px;
+            color: var(--accent-color);
+        }
+
+        .card-icon {
+            transition: transform 0.4s ease;
+        }
+
+        .card:not(.collapsed) .card-icon {
+            transform: rotate(180deg);
+        }
+
+        .card-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0, 1, 0, 1);
+            padding: 0 25px 25px 25px;
+        }
+
+        .card.collapsed .card-content {
+            max-height: 0;
+            padding: 0 25px;
+        }
+
+        .card-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(8px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Glassmorphism Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 32px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            position: relative;
+            color: white;
+            animation: glassIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes glassIn {
+            from { transform: scale(0.8) translateY(30px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .modal-header-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-header-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        .modal-header h2 {
+            font-size: 2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .modal-path {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'Ubuntu Mono', monospace;
+            font-size: 0.95em;
+            margin: 15px 0;
+            word-break: break-all;
+            color: var(--accent-color);
+        }
+
+        .modal-text {
+            margin: 15px 0;
+            white-space: pre-line;
+            opacity: 0.9;
+        }
+
+        /* Custom Scrollbar for Modal */
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px 15px 80px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.4em;
+            }
+
+            .modal-content {
+                padding: 25px;
+                border-radius: 24px;
+            }
+
+            .modal-header h2 {
+                font-size: 1.5em;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 900;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-file-invoice-dollar"></i> MATERIAL DE APOIO | ESCRITA FISCAL</h1>
+        </header>
+
+        <div class="content-grid">
+            <!-- Card 1: Importar Notas Fiscais -->
+            <div class="card">
+                <div class="card-header">
+                    <span><i class="fas fa-file-import"></i> Importar Notas Fiscais</span>
+                    <span class="card-icon"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="card-content">
+                    <div class="card-items">
+                        <div class="card-item" data-title="DANFE" data-icon="fas fa-receipt" data-content="DANFE (Documento Auxiliar da Nota Fiscal Eletrônica)\n\nUtilitários > Importação > Importação padrão > NF-e arquivo XML\n\nImporta tanto entradas quanto saídas de documentos fiscais.">
+                            <i class="fas fa-receipt"></i> DANFE
+                        </div>
+                        <div class="card-item" data-title="NFC-E" data-icon="fas fa-mobile-alt" data-content="NFC-E (Nota Fiscal de Consumidor Eletrônica)\n\nUtilitários > Importação > Importação padrão > NFC-E Arquivo XML\n\nDocumento para transações de consumidor final.">
+                            <i class="fas fa-mobile-alt"></i> NFC-E
+                        </div>
+                        <div class="card-item" data-title="NFS-E PADRÃO NACIONAL" data-icon="fas fa-file-alt" data-content="NFS-E Padrão Nacional (Nota Fiscal de Serviço Eletrônica)\n\nUtilitários > Importação > Importação padrão > NFS-E arquivo XML Padrão Nacional\n\nDocumento para prestação de serviços.">
+                            <i class="fas fa-file-alt"></i> NFS-E Padrão Nacional
+                        </div>
+                        <div class="card-item" data-title="NFS-E PADRÃO ABRASF" data-icon="fas fa-file-contract" data-content="NFS-E Padrão ABRASF (Associação Brasileira das Secretarias de Finanças das Capitais)\n\nUtilitários > Importação > Importação padrão > NFS-e arquivo XML Abrasf\n\nPadrão específico para serviços municipais.">
+                            <i class="fas fa-file-contract"></i> NFS-E Padrão ABRASF
+                        </div>
+                        <div class="card-item" data-title="CT-E" data-icon="fas fa-truck" data-content="CT-E (Conhecimento de Transporte Eletrônico)\n\nUtilitários > Importação > Importação padrão > CT-e e CT-e OS > Arquivo XML\n\nDocumento para transporte de cargas.">
+                            <i class="fas fa-truck"></i> CT-E
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Conferir Notas Fiscais -->
+            <div class="card collapsed">
+                <div class="card-header">
+                    <span><i class="fas fa-check-circle"></i> Conferir Notas Fiscais</span>
+                    <span class="card-icon"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="card-content">
+                    <div class="card-items">
+                        <div class="card-item" data-title="COMPRAS + SERVIÇOS TOMADOS" data-icon="fas fa-shopping-cart" data-content="Compras + Serviços Tomados\n\nRelatórios > acompanhamentos > Entradas\n\nAcompanhamento de todas as entradas de mercadorias e serviços adquiridos.">
+                            <i class="fas fa-shopping-cart"></i> Compras + Serviços Tomados
+                        </div>
+                        <div class="card-item" data-title="VENDAS + CT-E" data-icon="fas fa-chart-line" data-content="Vendas + CT-E\n\nRelatórios > acompanhamentos > saídas\n\nAcompanhamento de vendas e conhecimentos de transporte.">
+                            <i class="fas fa-chart-line"></i> Vendas + CT-E
+                        </div>
+                        <div class="card-item" data-title="SERVIÇOS PRESTADOS" data-icon="fas fa-handshake" data-content="Serviços Prestados\n\nRelatórios > acompanhamentos > serviços\n\nAcompanhamento de todos os serviços prestados pela empresa.">
+                            <i class="fas fa-handshake"></i> Serviços Prestados
+                        </div>
+                        <div class="card-item" data-title="ACUMULADORES USADOS" data-icon="fas fa-calculator" data-content="Acumuladores Usados\n\nRelatórios > acompanhamentos > resumo por acumulador\n\nResumo dos acumuladores fiscais utilizados.">
+                            <i class="fas fa-calculator"></i> Acumuladores Usados
+                        </div>
+                        <div class="card-item" data-title="NOTAS NÃO LANÇADAS" data-icon="fas fa-exclamation-triangle" data-content="Notas Não Lançadas\n\nRelatórios > acompanhamentos > notas não lançadas\n\nIdentificação de notas fiscais não processadas.">
+                            <i class="fas fa-exclamation-triangle"></i> Notas Não Lançadas
+                        </div>
+                        <div class="card-item" data-title="FATURAMENTO" data-icon="fas fa-money-bill-wave" data-content="Faturamento\n\nRelatórios > acompanhamentos > demonstrativo faturamento\n\nDemonstrativo completo de faturamento do período.">
+                            <i class="fas fa-money-bill-wave"></i> Faturamento
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Apurar Impostos e Retenções -->
+            <div class="card collapsed">
+                <div class="card-header">
+                    <span><i class="fas fa-calculator"></i> Apurar Impostos e Retenções</span>
+                    <span class="card-icon"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="card-content">
+                    <div class="card-items">
+                        <div class="card-item" data-title="ROTINA DE APURAÇÃO" data-icon="fas fa-cog" data-content="Rotina de Apuração\n\nMovimentos > apuração\n\nProcesso automatizado de cálculo e apuração de impostos.">
+                            <i class="fas fa-cog"></i> Rotina de Apuração
+                        </div>
+                        <div class="card-item" data-title="ATALHOS DE APURAÇÃO" data-icon="fas fa-keyboard" data-content="Atalhos de Apuração\n\nOpções rápidas:\n• Imprimir Guia\n• Imprimir Relatório\n• Pagar imposto\n\nAcesso direto às funções mais utilizadas.">
+                            <i class="fas fa-keyboard"></i> Atalhos de Apuração
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Conferir Impostos e Retenções -->
+            <div class="card collapsed">
+                <div class="card-header">
+                    <span><i class="fas fa-search"></i> Conferir Impostos e Retenções</span>
+                    <span class="card-icon"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="card-content">
+                    <div class="card-items">
+                        <div class="card-item" data-title="DAS" data-icon="fas fa-file-pdf" data-content="DAS (Documento de Arrecadação do Simples Nacional)\n\nRelatórios > impostos > simples nacional\n\nDocumento para recolhimento de impostos do Simples Nacional.">
+                            <i class="fas fa-file-pdf"></i> DAS
+                        </div>
+                        <div class="card-item" data-title="PIS E COFINS" data-icon="fas fa-percentage" data-content="PIS e COFINS\n\nRelatórios > impostos > demonstrativo EFD PIS e COFINS\nRelatórios > impostos > PIS e COFINS\n\nCálculo e acompanhamento de PIS e COFINS.">
+                            <i class="fas fa-percentage"></i> PIS e COFINS
+                        </div>
+                        <div class="card-item" data-title="ICMS / ST / IPI / DIFAL" data-icon="fas fa-layer-group" data-content="ICMS / ST / IPI / DIFAL\n\nRelatórios > impostos > Demonstrativos\nRelatórios > impostos > Resumo\n\nCálculo de ICMS, Substituição Tributária, IPI e DIFAL.">
+                            <i class="fas fa-layer-group"></i> ICMS / ST / IPI / DIFAL
+                        </div>
+                        <div class="card-item" data-title="IRPJ E CSLL" data-icon="fas fa-building" data-content="IRPJ e CSLL\n\nRelatórios > impostos > Demonstrativos\n\nCálculo de Imposto de Renda Pessoa Jurídica e Contribuição Social sobre Lucro Líquido.">
+                            <i class="fas fa-building"></i> IRPJ e CSLL
+                        </div>
+                        <div class="card-item" data-title="RETENÇÕES A RECOLHER" data-icon="fas fa-lock" data-content="Retenções a Recolher\n\nRelatórios > impostos > retenções a recolher\n\nAcompanhamento de retenções que devem ser recolhidas.">
+                            <i class="fas fa-lock"></i> Retenções a Recolher
+                        </div>
+                        <div class="card-item" data-title="RETENÇÕES A COMPENSAR" data-icon="fas fa-unlock" data-content="Retenções a Compensar\n\nRelatórios > impostos > retenções a compensar\n\nAcompanhamento de retenções que podem ser compensadas.">
+                            <i class="fas fa-unlock"></i> Retenções a Compensar
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Gerar Guias de Impostos -->
+            <div class="card collapsed">
+                <div class="card-header">
+                    <span><i class="fas fa-file-invoice"></i> Gerar Guias de Impostos</span>
+                    <span class="card-icon"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="card-content">
+                    <div class="card-items">
+                        <div class="card-item" data-title="MIT" data-icon="fas fa-stamp" data-content="MIT (Mapa de Impostos Totalizados)\n\nRelatórios > informativos > federais > MIT\n\nGuia federal para totalização de impostos.">
+                            <i class="fas fa-stamp"></i> MIT
+                        </div>
+                        <div class="card-item" data-title="DARE (ICMS / ST / DIFAL)" data-icon="fas fa-map" data-content="DARE (Documento de Arrecadação Estadual)\n\nRelatórios > guias > estaduais > dare\n\nGuia estadual para recolhimento de ICMS, ST e DIFAL.">
+                            <i class="fas fa-map"></i> DARE (ICMS / ST / DIFAL)
+                        </div>
+                        <div class="card-item" data-title="DARF (PIS / COFINS / IRPJ / CSLL)" data-icon="fas fa-flag" data-content="DARF (Documento de Arrecadação de Receitas Federais)\n\nRelatórios > guias > federais > darf normal\n\nGuia federal para recolhimento de PIS, COFINS, IRPJ e CSLL.">
+                            <i class="fas fa-flag"></i> DARF (PIS / COFINS / IRPJ / CSLL)
+                        </div>
+                        <div class="card-item" data-title="DAS" data-icon="fas fa-file-invoice-dollar" data-content="DAS (Documento de Arrecadação do Simples Nacional)\n\nRelatórios > guias > federais > das\n\nGuia para recolhimento do Simples Nacional.">
+                            <i class="fas fa-file-invoice-dollar"></i> DAS
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: Gerar Informativos -->
+            <div class="card collapsed">
+                <div class="card-header">
+                    <span><i class="fas fa-chart-bar"></i> Gerar Informativos</span>
+                    <span class="card-icon"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="card-content">
+                    <div class="card-items">
+                        <div class="card-item" data-title="SPED FISCAL" data-icon="fas fa-database" data-content="SPED Fiscal (Sistema Público de Escrituração Digital)\n\nRelatórios > informativos > federais > sped fiscal\n\nArquivo de escrituração fiscal digital obrigatório.">
+                            <i class="fas fa-database"></i> SPED Fiscal
+                        </div>
+                        <div class="card-item" data-title="EFD CONTRIBUIÇÕES" data-icon="fas fa-folder-open" data-content="EFD Contribuições (Escrituração Fiscal Digital de Contribuições)\n\nRelatórios > informativos > federais > efd contribuições\n\nArquivo de contribuições sociais.">
+                            <i class="fas fa-folder-open"></i> EFD Contribuições
+                        </div>
+                        <div class="card-item" data-title="EFD REINF" data-icon="fas fa-file-code" data-content="EFD REINF (Escrituração Fiscal Digital - Retenção e Informação Fiscal)\n\nRelatórios > informativos > federais > efd reinf > enviar arquivos\n\nInformações de retenções e impostos.">
+                            <i class="fas fa-file-code"></i> EFD REINF
+                        </div>
+                        <div class="card-item" data-title="MIT" data-icon="fas fa-stamp" data-content="MIT (Mapa de Impostos Totalizados)\n\nRelatórios > informativos > federais > MIT\n\nTotalização de impostos federais.">
+                            <i class="fas fa-stamp"></i> MIT
+                        </div>
+                        <div class="card-item" data-title="DMED" data-icon="fas fa-prescription-bottle" data-content="DMED (Declaração de Medicamentos)\n\nRelatórios > informativos > federais > DMED\n\nDeclaração de movimentação de medicamentos.">
+                            <i class="fas fa-prescription-bottle"></i> DMED
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 7: Parâmetros Importantes -->
+            <div class="card collapsed">
+                <div class="card-header">
+                    <span><i class="fas fa-exclamation-circle"></i> PARÂMETROS IMPORTANTES</span>
+                    <span class="card-icon"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="card-content">
+                    <div class="card-items">
+                        <div class="card-item" data-title="ACUMULADOR" data-icon="fas fa-cogs" data-content="ACUMULADOR\n\nArquivos > acumuladores\n\nPossui as configurações de impostos e regras das notas lançadas ou importadas no sistema. Já vem com as regras prontas, devendo configurar somente as exceções.">
+                            <i class="fas fa-cogs"></i> ACUMULADOR
+                        </div>
+                        <div class="card-item" data-title="CADASTRO DE IMPOSTOS" data-icon="fas fa-university" data-content="CADASTRO DE IMPOSTOS\n\nArquivos > Impostos\n\nConfigurações para apuração dos impostos e integração dos mesmos para contabilidade. Já vem configurado na importação de perfis de empresas.">
+                            <i class="fas fa-university"></i> CADASTRO DE IMPOSTOS
+                        </div>
+                        <div class="card-item" data-title="CONFIGURAÇÕES DE IMPORTAÇÃO" data-icon="fas fa-file-upload" data-content="CONFIGURAÇÕES DE IMPORTAÇÃO\n\nArquivos > configuração de importação > NF-e arquivo XML e demais tipos de notas\n\nConfigurações de De-Para para importação de todos os tipos de documentos fiscais. Já vem pronto na importação de perfis devendo configurar somente as exceções: Ex: despesas.">
+                            <i class="fas fa-file-upload"></i> CONFIGURAÇÕES DE IMPORTAÇÃO
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-header-content">
+                    <i id="modal-icon" class="modal-header-icon"></i>
+                    <h2 id="modal-title"></h2>
+                </div>
+                <button id="close-btn" class="close-btn">&times;</button>
+            </div>
+            <div id="modal-body" class="modal-body"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 MATERIAL DE APOIO | ESCRITA FISCAL - Organização e Praticidade</p>
+    </footer>
+
+    <script>
+        // Collapsible Cards
+        document.querySelectorAll('.card-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const card = header.parentElement;
+                card.classList.toggle('collapsed');
+            });
+        });
+
+        // Modal Logic
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalIcon = document.getElementById('modal-icon');
+        const modalBody = document.getElementById('modal-body');
+        const closeBtn = document.getElementById('close-btn');
+
+        document.querySelectorAll('.card-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const title = item.getAttribute('data-title');
+                const icon = item.getAttribute('data-icon');
+                const content = item.getAttribute('data-content');
+
+                modalTitle.textContent = title;
+                modalIcon.className = 'modal-header-icon ' + icon;
+                
+                // Process content: replace \n with actual line breaks and format paths
+                const lines = content.split('\\n');
+                let html = '';
+                
+                lines.forEach(line => {
+                    const trimmed = line.trim();
+                    if (!trimmed) return;
+
+                    if (trimmed.includes(' > ')) {
+                        html += `<div class="modal-path"><i class="fas fa-chevron-right"></i> ${trimmed}</div>`;
+                    } else if (trimmed.startsWith('•')) {
+                        html += `<div style="margin-left: 15px; margin-bottom: 5px; opacity: 0.9;">${trimmed}</div>`;
+                    } else {
+                        html += `<div class="modal-text">${trimmed}</div>`;
+                    }
+                });
+
+                modalBody.innerHTML = html;
+                modal.classList.add('active');
+            });
+        });
+
+        // Close Modal
+        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') modal.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
